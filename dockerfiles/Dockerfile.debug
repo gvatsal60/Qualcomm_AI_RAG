@@ -8,7 +8,7 @@ LABEL DESCRIPTION="Build Environment"
 ARG USERNAME=vscode
 
 # Install dependencies
-RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip uv
 
 # Switch to non-root user
 USER ${USERNAME}

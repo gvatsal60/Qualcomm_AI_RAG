@@ -112,3 +112,10 @@ lib/
 dist/
 bower_components/
 *.min.js
+
+# Environment variables
+credentials.env
+
+# Others
+.vectordb/
+.docs/

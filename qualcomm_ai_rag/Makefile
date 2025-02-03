@@ -1,36 +1,32 @@
-# Compiler and flags
+include ../cfg/.env
 
 PYTHON := python3
 
 SRC_DIR := src
 TEST_DIR := tests
-VENV_DIR := .venv
+VENV_DIR := ../.venv
 
-ifeq ($(OS), Windows_NT)
-	RMDIR:=rmdir /s /q
-	VENV_PYTHON:=.\.venv\Scripts\python.exe
-else
-	RMDIR:=rm -rf
-	VENV_PYTHON:=./.venv/bin/python
-endif
+RMDIR:=rm -rf
+VENV_PYTHON:=$(VENV_DIR)/bin/python
+VENV_ACTIVATE:=$(VENV_DIR)/bin/activate
 
-BUILD_PY_ENV := activate.py
 MAIN_PY := main.py
 
 .PHONY: all build test clean
 
-all: build
+all:
+	@streamlit run $(SRC_DIR)/$(MAIN_PY)
 
 build:
 	@echo "Building project..."
-	@$(PYTHON) $(BUILD_PY_ENV)
+	@$(SHELL) -c "../scripts/env_setup.sh"
 
 test:
 	@echo "Building tests..."
 	@if [ -z "$(FILE)" ]; then $(VENV_PYTHON) -m unittest discover -v $(TEST_DIR) "*_test.py"; \
 	else $(VENV_PYTHON) -m unittest -v $(TEST_DIR)/$$FILE; fi
 
-run:
+run: build
 	@echo "Running project..."
 	@if [ -z "$(FILE)" ]; then FILE=$(MAIN_PY); fi; \
 	$(VENV_PYTHON) $(SRC_DIR)/$$FILE
