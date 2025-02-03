@@ -1,0 +1,30 @@
+# VSCode
+.devcontainer/*
+.vscode/*
+
+# Github
+.github/*
+
+# Git
+.git/*
+.gitignore
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE
+README.md
+
+# Docker
+dockerfiles/*
+.dockerignore
+
+# Makefiles
+Makefile
+*.mk
+
+# Others
+snippets/*
+cfg/*
+.markdownlint.json
+.pre-commit-config.yaml
+.yamllint.yaml

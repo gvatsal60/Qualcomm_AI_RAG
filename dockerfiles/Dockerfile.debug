@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/devcontainers/python:latest AS base
+
+# Metadata indicating the maintainer of this Dockerfile
+LABEL MAINTAINER="gvatsal60"
+# Description of the purpose of this image
+LABEL DESCRIPTION="Build Environment"
+
+ARG USERNAME=vscode
+
+# Install dependencies
+RUN python3 -m pip install --upgrade pip
+
+# Switch to non-root user
+USER ${USERNAME}
