@@ -31,7 +31,6 @@ run: build
 	. $(VENV_ACTIVATE) && \
 	streamlit run $(SRC_DIR)/$$FILE
 
-
 clean:
 	@echo "Cleaning project..."
 	@$(RMDIR) $(VENV_DIR) \

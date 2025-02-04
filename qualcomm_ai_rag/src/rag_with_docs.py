@@ -20,17 +20,34 @@ import sys
 from dotenv import load_dotenv
 from pathlib import Path
 
-load_dotenv(Path("cfg/credentials.env"))
+try:
+    # Load the environment variables from the .env file
+    dotenv_path = Path("cfg/.env.local")
+    if not dotenv_path.exists():
+        raise FileNotFoundError(
+            "file not found at the specified path."
+        )
+    load_dotenv(dotenv_path)
 
-# Load API key from environment variable
-os.environ['IMAGINE_API_KEY'] = os.getenv('IMAGINE_API_KEY', '')
-os.environ['IMAGINE_API_ENDPOINT'] = os.getenv(
-    'IMAGINE_API_ENDPOINT', 'https://cloudai.cirrascale.com/apis/v2')
+    # Load API key from environment variable
+    os.environ['IMAGINE_API_KEY'] = os.getenv('IMAGINE_API_KEY', '')
+    os.environ['IMAGINE_API_ENDPOINT'] = os.getenv(
+        'IMAGINE_API_ENDPOINT', 'https://cloudai.cirrascale.com/apis/v2')
+
+    # Check if required environment variables are loaded correctly
+    if not os.environ['IMAGINE_API_KEY']:
+        raise ValueError(
+            "IMAGINE_API_KEY is not set in the environment variables."
+        )
+
+    print("Environment variables loaded successfully.")
+
+except (OSError, ValueError) as e:
+    print(f"An error occurred: {e}")
 
 # Set the event loop policy for Windows
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-
 
 #############################################
 # Constants
@@ -136,7 +153,6 @@ def create_vector_store(docs, collection_name, batch_size=100):
         vectordb.add_documents(batch)
         progress_bar.progress((i + len(batch)) / total_docs)
 
-    vectordb.persist()
     return vectordb
 
 

@@ -72,7 +72,7 @@ if [ -n "${CODESPACE_NAME}" ]; then
     fi
 fi
 
-
+# Install Python dependencies in a virtual environment
 if command -v python3 >/dev/null 2>&1; then
     python3 -m venv .venv
     if command -v pip >/dev/null 2>&1; then

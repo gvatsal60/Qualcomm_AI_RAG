@@ -13,6 +13,12 @@ ARG USERNAME=vscode
 #   && apt-get install -y nodejs \
 #   && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
+# Install Python dependencies
+RUN pip install --upgrade pip \
+    && pip install uv playwright \
+    && playwright install \
+    && playwright install-deps
+
 # Disabled Telemetry
 ENV ANONYMIZED_TELEMETRY=False
 
