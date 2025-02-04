@@ -2,7 +2,7 @@ import asyncio
 import streamlit as st
 import os
 import shutil
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from imagine.langchain import ImagineEmbeddings
 from imagine.langchain import ImagineChat
 from langchain.chains import ConversationalRetrievalChain
@@ -20,7 +20,7 @@ import sys
 from dotenv import load_dotenv
 from pathlib import Path
 
-load_dotenv(Path("cfg/keys.env"))
+load_dotenv(Path("cfg/credentials.env"))
 
 # Load API key from environment variable
 os.environ['IMAGINE_API_KEY'] = os.getenv('IMAGINE_API_KEY', '')
@@ -33,7 +33,14 @@ if sys.platform == "win32":
 
 
 #############################################
+# Constants
+VECTOR_DB_DIR = ".vectordb"
+DOCS_DIR = ".docs"
+
+#############################################
 # Utility functions
+
+
 def is_same_domain(base_url, new_url):
     return urlparse(base_url).netloc == urlparse(new_url).netloc
 
@@ -68,7 +75,7 @@ def extract_links(markdown_text):
     return cleaned_links
 
 
-def crawl_and_save_docs(url, set_name, visited=None, max_depth=0, depth=0, output_dir=".docs", max_urls=20):
+def crawl_and_save_docs(url, set_name, visited=None, max_depth=0, depth=0, output_dir=DOCS_DIR, max_urls=20):
     if visited is None:
         visited = set()
     if depth > max_depth or len(visited) >= max_urls:
@@ -97,7 +104,7 @@ def crawl_and_save_docs(url, set_name, visited=None, max_depth=0, depth=0, outpu
             st.error(f"Error crawling {url}: {str(e)}")
 
 
-def load_and_chunk_docs(docs_dir=".docs", chunk_size=1000, chunk_overlap=100):
+def load_and_chunk_docs(docs_dir=DOCS_DIR, chunk_size=1000, chunk_overlap=100):
     md_files = glob.glob(os.path.join(docs_dir, "**", "*.md"), recursive=True)
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size, chunk_overlap=chunk_overlap
@@ -115,7 +122,7 @@ def load_and_chunk_docs(docs_dir=".docs", chunk_size=1000, chunk_overlap=100):
 
 def create_vector_store(docs, collection_name, batch_size=100):
     embeddings = ImagineEmbeddings()
-    collection_dir = os.path.join(".vectordb", collection_name)
+    collection_dir = os.path.join(VECTOR_DB_DIR, collection_name)
 
     # Create the collection first
     vectordb = Chroma(embedding_function=embeddings,
@@ -149,18 +156,17 @@ def create_rag_chain(vectordb):
 
 def clean_cache_and_files():
     st.session_state.pop("qa_chain", None)
-    if os.path.exists(".docs"):
-        shutil.rmtree(".docs")
-    if os.path.exists('.vectordb'):
-        shutil.rmtree('.vectordb')
+    if os.path.exists(DOCS_DIR):
+        shutil.rmtree(DOCS_DIR)
+    if os.path.exists(VECTOR_DB_DIR):
+        shutil.rmtree(VECTOR_DB_DIR)
     st.session_state.pop("vectordb", None)
     st.success("Cache, docs folder, and vectordb have been cleaned!")
 
 
 def get_available_collections():
-    vectordb_dir = ".vectordb"
-    if os.path.exists(vectordb_dir):
-        return [d for d in os.listdir(vectordb_dir) if os.path.isdir(os.path.join(vectordb_dir, d))]
+    if os.path.exists(VECTOR_DB_DIR):
+        return [d for d in os.listdir(VECTOR_DB_DIR) if os.path.isdir(os.path.join(VECTOR_DB_DIR, d))]
     return []
 
 #############################################
@@ -178,10 +184,11 @@ def rag_with_docs():
 
         # max_depth = st.slider("Max Depth", min_value=2, max_value=7, value=2)
         # max_urls = st.slider("Max URLs to Scrape", min_value=20, max_value=100, value=20)
+
         if st.button("Start Crawling and Indexing"):
             if user_url and set_name:
                 # Check if the set_name already exists
-                if os.path.exists(os.path.join(".docs", set_name)):
+                if os.path.exists(os.path.join(DOCS_DIR, set_name)):
                     st.error(
                         f"The set name '{set_name}' already exists. Please choose a different name.")
                 else:
@@ -189,7 +196,7 @@ def rag_with_docs():
                     crawl_and_save_docs(user_url, set_name,
                                         max_depth=0, max_urls=20)
                     # Load + chunk
-                    docs = load_and_chunk_docs(docs_dir=".docs")
+                    docs = load_and_chunk_docs(docs_dir=DOCS_DIR)
                     # Create vector store
                     vectordb = create_vector_store(
                         docs, collection_name=set_name)
@@ -203,7 +210,7 @@ def rag_with_docs():
         selected_collection = st.selectbox(
             "Select a document set to chat with:", available_collections)
         if selected_collection:
-            collection_dir = os.path.join(".vectordb", selected_collection)
+            collection_dir = os.path.join(VECTOR_DB_DIR, selected_collection)
             if os.path.exists(collection_dir):
                 vectordb = Chroma(embedding_function=ImagineEmbeddings(
                 ), persist_directory=collection_dir, collection_name=selected_collection)

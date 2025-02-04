@@ -71,3 +71,24 @@ if [ -n "${CODESPACE_NAME}" ]; then
         done
     fi
 fi
+
+
+if command -v python3 >/dev/null 2>&1; then
+    python3 -m venv .venv
+    if command -v pip >/dev/null 2>&1; then
+        pip install --upgrade pip
+        pip install uv
+
+        if [ -f "requirements.txt" ]; then
+            uv pip install -r requirements.txt
+        else
+            echo "Warning: requirements.txt file not found. No Python dependencies installed"
+        fi
+    else
+        echo "Error: pip is not installed. Unable to install Python dependencies"
+        exit 1
+    fi
+else
+    echo "Error: python3 is not installed. Unable to create virtual environment"
+    exit 1
+fi

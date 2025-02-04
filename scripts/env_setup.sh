@@ -37,8 +37,10 @@ if [ -n "${REQUIREMENTS_FILES}" ]; then
         fi
     done
     echo "Packages from all found 'requirements.txt' files installed."
-    playwright install
-    playwright install-deps
+    if command -v playwright &>/dev/null; then
+        playwright install
+        playwright install-deps
+    fi
 else
     echo "'requirements.txt' not found in the current directory or any subdirectories."
 fi

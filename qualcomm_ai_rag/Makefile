@@ -15,7 +15,6 @@ MAIN_PY := main.py
 .PHONY: all build test clean
 
 all:
-	@streamlit run $(SRC_DIR)/$(MAIN_PY)
 
 build:
 	@echo "Building project..."
