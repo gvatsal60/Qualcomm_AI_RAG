@@ -8,13 +8,10 @@ LABEL DESCRIPTION="Build Environment"
 ARG USERNAME=vscode
 
 # Install dependencies
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-  && apt-get update \
-  && apt-get install -y nodejs \
-  && npm install -g playwright \
-  && playwright install \
-  && playwright install-deps \
-  && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+# RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+#   && apt-get update \
+#   && apt-get install -y nodejs \
+#   && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Disabled Telemetry
 ENV ANONYMIZED_TELEMETRY=False

@@ -28,7 +28,9 @@ test:
 run: build
 	@echo "Running project..."
 	@if [ -z "$(FILE)" ]; then FILE=$(MAIN_PY); fi; \
-	$(VENV_PYTHON) $(SRC_DIR)/$$FILE
+	. $(VENV_ACTIVATE) && \
+	streamlit run $(SRC_DIR)/$$FILE
+
 
 clean:
 	@echo "Cleaning project..."
