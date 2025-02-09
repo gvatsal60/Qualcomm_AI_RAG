@@ -37,11 +37,17 @@ if [ -n "${REQUIREMENTS_FILES}" ]; then
         fi
     done
     echo "Packages from all found 'requirements.txt' files installed."
+
+    echo "Installing playwright..."
     if ! command -v playwright &>/dev/null; then
-        pip install playwright
-        playwright install
-        playwright install-deps
+        if ! command -v uv &>/dev/null; then
+            pip install playwright
+        else
+            uv pip install playwright
+        fi
     fi
+    playwright install
+    # playwright install-deps
 else
     echo "'requirements.txt' not found in the current directory or any subdirectories."
 fi

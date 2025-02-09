@@ -114,7 +114,7 @@ bower_components/
 *.min.js
 
 # Environment variables
-credentials.env
+*.local
 
 # Others
 .vectordb/
