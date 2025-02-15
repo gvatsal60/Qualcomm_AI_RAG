@@ -22,6 +22,7 @@ else
 fi
 
 # Activate the virtual environment
+# shellcheck disable=SC1091
 source ${VENV_PATH}/bin/activate
 
 # Find all 'requirements.txt' files in the current directory and subdirectories

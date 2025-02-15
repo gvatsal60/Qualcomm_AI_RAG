@@ -28,4 +28,5 @@ pandas
 pip
 reportlab
 streamlit
+types-requests
 yfinance
