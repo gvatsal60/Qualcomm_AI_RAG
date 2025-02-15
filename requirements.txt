@@ -1,5 +1,3 @@
-# Wheel file from URL
-https://cloudai.cirrascale.com/sdk/_downloads/3433649516f5c32f3603ae6f98c65e48/imagine_sdk-0.4.2-py3-none-any.whl
 
 # Extras for the wheel file
 
@@ -10,8 +8,9 @@ crawl4ai
 dashscope
 duckduckgo-search
 google-search-results
-google-search-results
 gradio
+# Wheel file from URL
+https://cloudai.cirrascale.com/sdk/_downloads/3433649516f5c32f3603ae6f98c65e48/imagine_sdk-0.4.2-py3-none-any.whl
 imagine_sdk[langchain]
 ipykernel
 ipython
@@ -29,4 +28,5 @@ pandas
 pip
 reportlab
 streamlit
+types-requests
 yfinance
